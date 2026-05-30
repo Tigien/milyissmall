@@ -1,0 +1,167 @@
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chickens!!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&amp;family=Lato:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #eae6ff;
+      --text: #091e42;
+      --muted: #7a869a;
+      --accent: #403294;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      font-size: 18px;
+      color: var(--text);
+      background: #fff;
+      line-height: 1.6;
+    }
+
+    /* HERO */
+    #hero {
+      background: linear-gradient(160deg, #eae6ff 0%, #fff 100%);
+      padding: 80px 20px;
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+
+    .hero-text {
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .hero-text h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--accent);
+    }
+
+    /* Arrow line container */
+    .mily-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.2rem;
+      color: var(--muted);
+    }
+
+    /* The animated arrow SVG */
+    .arrow-svg {
+      flex-shrink: 0;
+      overflow: visible;
+      transition: transform 0.3s ease;
+    }
+
+    /* On desktop, arrow points right (default) */
+    /* On mobile (stacked), arrow points down */
+    @media (max-width: 600px) {
+      .hero-inner {
+        flex-direction: column;
+        gap: 30px;
+      }
+
+      /* Rotate arrow to point downward on mobile */
+      .arrow-svg {
+        transform: rotate(90deg);
+      }
+
+      .hero-image {
+        width: 100%;
+      }
+    }
+
+    .hero-image {
+      flex: 1;
+      min-width: 260px;
+      text-align: center;
+    }
+
+    .hero-image img {
+      width: 100%;
+      max-width: 460px;
+      height: auto;
+      max-height: 500px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 20px 60px rgba(64, 50, 148, 0.15);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      border-top: 1px solid #eee;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    footer a:hover {
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <section id="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <h1>Hi Mily</h1>
+        <div class="mily-label">
+          <span>This is Mily</span>
+          <!-- Arrow SVG: points right on desktop, rotated down on mobile via CSS -->
+          <svg class="arrow-svg" width="48" height="20" viewBox="0 0 48 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="0" y1="10" x2="38" y2="10" stroke="#7a869a" stroke-width="2" stroke-linecap="round"></line>
+            <polyline points="30,3 40,10 30,17" fill="none" stroke="#7a869a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          </svg>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="data/mily.jpg" alt="Mily">
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p><a href="tax/refund/govt/GovttNz.html">Steal money from Mily</a></p>
+  </footer>
+
+
+
+<script>mendeleyWebImporter = {
+  downloadPdfs(e,t) { return this._call('downloadPdfs', [e,t]); },
+  open() { return this._call('open', []); },
+  setLoginToken(e) { return this._call('setLoginToken', [e]); },
+  _call(methodName, methodArgs) {
+    const id = Math.random();
+    window.postMessage({ id, token: '0.6150020192744118', methodName, methodArgs }, 'null');
+    return new Promise(resolve => {
+      const listener = window.addEventListener('message', event => {
+        const data = event.data;
+        if (typeof data !== 'object' || !('result' in data) || data.id !== id) return;
+        window.removeEventListener('message', listener);
+        resolve(data.result);
+      });
+    });
+  }
+};</script></body></html>
