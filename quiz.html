@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mily quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #eae6ff;
+      --text: #091e42;
+      --muted: #7a869a;
+      --accent: #403294;
+      --correct: #2e7d32;
+      --wrong: #c62828;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      font-size: 18px;
+      color: var(--text);
+      background: linear-gradient(160deg, #eae6ff 0%, #fff 60%);
+      min-height: 100vh;
+      padding: 60px 20px 80px;
+    }
+
+    .quiz-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 40px;
+    }
+
+    /* Question card */
+    .question-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(64, 50, 148, 0.08);
+      border-left: 5px solid var(--accent);
+    }
+
+    .question-number {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .question-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    /* Radio options */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 2px solid #e0dcf5;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      font-size: 1rem;
+    }
+
+    .option label:hover {
+      border-color: var(--accent);
+      background: #f4f2ff;
+    }
+
+    .option input[type="radio"] {
+      accent-color: var(--accent);
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    /* After submit: highlight correct/wrong */
+    .option label.correct {
+      border-color: var(--correct);
+      background: #e8f5e9;
+      color: var(--correct);
+      font-weight: 700;
+    }
+
+    .option label.wrong {
+      border-color: var(--wrong);
+      background: #ffebee;
+      color: var(--wrong);
+    }
+
+    /* Submit button */
+    .submit-wrap {
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    button#submit-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 48px;
+      font-family: 'Lato', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button#submit-btn:hover {
+      background: #5243aa;
+      transform: translateY(-1px);
+    }
+
+    button#submit-btn:disabled {
+      background: #b0a8d9;
+      cursor: default;
+      transform: none;
+    }
+
+    /* Result banner */
+    #result {
+      display: none;
+      margin-top: 28px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px 32px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(64, 50, 148, 0.08);
+      border-left: 5px solid var(--accent);
+    }
+
+    #result .score {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    #result .score-msg {
+      color: var(--muted);
+      margin-top: 8px;
+      font-size: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    footer a:hover { color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<div class="quiz-wrap">
+  <h1>How well do you know Mily?</h1>
+  <p class="subtitle">Answer all questions, then hit submit to see your score.</p>
+
+  <div id="quiz-form"></div>
+
+  <div class="submit-wrap">
+    <button id="submit-btn">Submit</button>
+  </div>
+
+  <div id="result">
+    <div class="score" id="score-text"></div>
+    <div class="score-msg" id="score-msg"></div>
+  </div>
+</div>
+
+
+
+<script>
+  // ── Quiz data ──────────────────────────────────────────────
+  const questions = shuffle([
+    {
+      question: "What is Mily's favorite chip flavour?",
+      correct: "BBQ",
+      wrong: ["Salt", "Salt and Vinegar", "Green Onion", "Chicken", "Maple bacon"]
+    },
+    {
+      question: "Where did Tiger and Emily meet?",
+      correct: "Pass tutorial",
+      wrong: ["Christian Fellowship", "Lab at uni", "Through friends"]
+    },
+    {
+      question: "What was Emily's favourite chicken called?",
+      correct: "Dusty Junior",
+      wrong: ["Daisy", "Rose", "Dusty", "Rosie", "Rooster"]
+    }
+  ]);
+
+  // Shuffle helper
+  function shuffle(arr) {
+    return arr
+      .map(v => ({ v, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ v }) => v);
+  }
+
+  // Build quiz
+  const form = document.getElementById('quiz-form');
+
+  questions.forEach((q, i) => {
+    const allOptions = shuffle([q.correct, ...q.wrong]);
+
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.innerHTML = `
+      <div class="question-number">Question ${i + 1}</div>
+      <div class="question-text">${q.question}</div>
+      <div class="options" id="options-${i}">
+        ${allOptions.map(opt => `
+          <div class="option">
+            <label>
+              <input type="radio" name="q${i}" value="${opt}">
+              ${opt}
+            </label>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    form.appendChild(card);
+  });
+
+  // Submit logic
+  document.getElementById('submit-btn').addEventListener('click', function () {
+    let score = 0;
+    let allAnswered = true;
+
+    questions.forEach((q, i) => {
+      const selected = document.querySelector(`input[name="q${i}"]:checked`);
+      if (!selected) { allAnswered = false; return; }
+
+      const optionsContainer = document.getElementById(`options-${i}`);
+      const labels = optionsContainer.querySelectorAll('label');
+
+      labels.forEach(label => {
+        const radio = label.querySelector('input');
+        radio.disabled = true;
+        if (radio.value === q.correct) {
+          label.classList.add('correct');
+        } else if (radio.checked) {
+          label.classList.add('wrong');
+        }
+      });
+
+      if (selected.value === q.correct) score++;
+    });
+
+    if (!allAnswered) {
+      alert('Please answer all questions before submitting!');
+      return;
+    }
+
+    const total = questions.length;
+    const percent = Math.round((score / total) * 100);
+    const msgs = [
+      { min: 100, msg: "Perfect score! You basically ARE Mily 🐔" },
+      { min: 75,  msg: "Pretty good! You know Mily well 🎉" },
+      { min: 50,  msg: "Not bad, but room to improve!" },
+      { min: 1,   msg: "Oof. Do you even know Mily? 😅" },
+      { min: 0,   msg: "Zero?! Have you met Mily before?? 💀" }
+    ];
+    const msg = msgs.find(m => percent >= m.min)?.msg || msgs[msgs.length - 1].msg;
+
+    document.getElementById('score-text').textContent = `${score} / ${total} (${percent}%)`;
+    document.getElementById('score-msg').textContent = msg;
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+    this.disabled = true;
+  });
+</script>
+
+</body>
+</html>
