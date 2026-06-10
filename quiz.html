@@ -7,306 +7,1560 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #eae6ff;
-      --text: #091e42;
-      --muted: #7a869a;
-      --accent: #403294;
-      --correct: #2e7d32;
-      --wrong: #c62828;
-    }
-
-    body {
-      font-family: 'Lato', sans-serif;
-      font-size: 18px;
-      color: var(--text);
-      background: linear-gradient(160deg, #eae6ff 0%, #fff 60%);
-      min-height: 100vh;
-      padding: 60px 20px 80px;
-    }
-
-    .quiz-wrap {
-      max-width: 680px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.8rem, 5vw, 3rem);
-      font-weight: 700;
-      color: var(--accent);
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: 1rem;
-      margin-bottom: 40px;
-    }
-
-    /* Question card */
-    .question-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 28px 32px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 20px rgba(64, 50, 148, 0.08);
-      border-left: 5px solid var(--accent);
-    }
-
-    .question-number {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    .question-text {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-      line-height: 1.4;
-    }
-
-    /* Radio options */
-    .options {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .option label {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      border-radius: 8px;
-      border: 2px solid #e0dcf5;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-      font-size: 1rem;
-    }
-
-    .option label:hover {
-      border-color: var(--accent);
-      background: #f4f2ff;
-    }
-
-    .option input[type="radio"] {
-      accent-color: var(--accent);
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-      cursor: pointer;
-    }
-
-    /* After submit: highlight correct/wrong */
-    .option label.correct {
-      border-color: var(--correct);
-      background: #e8f5e9;
-      color: var(--correct);
-      font-weight: 700;
-    }
-
-    .option label.wrong {
-      border-color: var(--wrong);
-      background: #ffebee;
-      color: var(--wrong);
-    }
-
-    /* Submit button */
-    .submit-wrap {
-      text-align: center;
-      margin-top: 32px;
-    }
-
-    button#submit-btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 14px 48px;
-      font-family: 'Lato', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-    }
-
-    button#submit-btn:hover {
-      background: #5243aa;
-      transform: translateY(-1px);
-    }
-
-    button#submit-btn:disabled {
-      background: #b0a8d9;
-      cursor: default;
-      transform: none;
-    }
-
-    /* Result banner */
-    #result {
-      display: none;
-      margin-top: 28px;
-      background: #fff;
-      border-radius: 12px;
-      padding: 28px 32px;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(64, 50, 148, 0.08);
-      border-left: 5px solid var(--accent);
-    }
-
-    #result .score {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    #result .score-msg {
-      color: var(--muted);
-      margin-top: 8px;
-      font-size: 1rem;
-    }
-
-    footer {
-      text-align: center;
-      padding: 40px 20px 0;
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
-    footer a {
-      color: var(--accent);
-      text-decoration: underline;
-    }
-
-    footer a:hover { color: var(--muted); }
+    :root { --bg: #eae6ff; --text: #091e42; --muted: #7a869a; --accent: #403294; --correct: #2e7d32; --wrong: #c62828; }
+    body { font-family: 'Lato', sans-serif; font-size: 18px; color: var(--text); background: linear-gradient(160deg, #eae6ff 0%, #fff 60%); min-height: 100vh; padding: 60px 20px 80px; }
+    .quiz-wrap { max-width: 680px; margin: 0 auto; }
+    h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 700; color: var(--accent); margin-bottom: 40px; }
+    .progress-wrap { margin-bottom: 28px; }
+    .progress-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.5px; }
+    .progress-bar-bg { background: #e0dcf5; border-radius: 999px; height: 6px; overflow: hidden; }
+    .progress-bar-fill { background: var(--accent); height: 100%; border-radius: 999px; transition: width 0.4s ease; }
+    .question-card { background: #fff; border-radius: 12px; padding: 28px 32px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(64,50,148,0.08); border-left: 5px solid var(--accent); }
+    .question-number { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
+    .question-text { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; line-height: 1.4; }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option label { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; border: 2px solid #e0dcf5; cursor: pointer; transition: border-color 0.2s, background 0.2s; font-size: 1rem; }
+    .option label:hover { border-color: var(--accent); background: #f4f2ff; }
+    .option input[type="radio"] { accent-color: var(--accent); width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; }
+    .option label.correct { border-color: var(--correct); background: #e8f5e9; color: var(--correct); font-weight: 700; }
+    .option label.wrong { border-color: var(--wrong); background: #ffebee; color: var(--wrong); }
+    .nav-wrap { display: flex; justify-content: center; gap: 12px; margin-top: 8px; }
+    .nav-btn { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 14px 48px; font-family: 'Lato', sans-serif; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+    .nav-btn:hover { background: #5243aa; transform: translateY(-1px); }
+    .nav-btn:disabled { background: #b0a8d9; cursor: default; transform: none; }
+    .nav-btn.back { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+    .nav-btn.back:hover { background: #f4f2ff; transform: translateY(-1px); }
+    #review-section { display: none; }
+    .review-header { text-align: center; margin-bottom: 32px; }
+    .score { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--accent); font-weight: 700; }
+    .score-msg { color: var(--muted); margin-top: 8px; font-size: 1rem; }
+    .question-page { animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
-
 <div class="quiz-wrap">
   <h1>How well do you know Mily?</h1>
-  <p class="subtitle">Answer all questions, then hit submit to see your score.</p>
-
-  <div id="quiz-form"></div>
-
-  <div class="submit-wrap">
-    <button id="submit-btn">Submit</button>
+  <div id="quiz-section">
+    <div class="progress-wrap">
+      <div class="progress-label" id="progress-label"></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+    </div>
+    <div id="question-container"></div>
+    <div class="nav-wrap">
+      <button class="nav-btn back" id="back-btn" style="display:none">Back</button>
+      <button class="nav-btn" id="next-btn">Next</button>
+    </div>
   </div>
-
-  <div id="result">
-    <div class="score" id="score-text"></div>
-    <div class="score-msg" id="score-msg"></div>
+  <div id="review-section">
+    <div class="review-header">
+      <div class="score" id="score-text"></div>
+      <div class="score-msg" id="score-msg"></div>
+    </div>
+    <div id="review-container"></div>
   </div>
 </div>
-
-
-
 <script>
-  // ── Quiz data ──────────────────────────────────────────────
-  const questions = shuffle([
-    {
-      question: "What is Mily's favorite chip flavour?",
-      correct: "BBQ",
-      wrong: ["Salt", "Salt and Vinegar", "Green Onion", "Chicken", "Maple bacon", "Sour Cream & Chives", "Sweet Chilli", "Caramelised Onion & Balsamic Vinegar", "Honey Soy Chicken", "Cheddar & Red Onion"]
-    },
-    {
-      question: "Where did Tiger and Mily meet?",
-      correct: "Pass tutorial",
-      wrong: ["Christian Fellowship", "Lab at uni", "Through friends"]
-    },
-    {
-      question: "What was Mily's favourite chicken called?",
-      correct: "Dusty Junior",
-      wrong: ["Daisy", "Rose", "Dusty", "Rosie", "Rooster"]
-    }
-  ]);
-
-  // Shuffle helper
   function shuffle(arr) {
-    return arr
-      .map(v => ({ v, sort: Math.random() }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ v }) => v);
+    return arr.map(v => ({ v, sort: Math.random() })).sort((a, b) => a.sort - b.sort).map(({ v }) => v);
   }
 
-  // Build quiz
-  const form = document.getElementById('quiz-form');
+  const questions = shuffle([
+  {
+    "question": "What is Mily’s favourite chip flavour?",
+    "correct": "BBQ",
+    "wrong": [
+      "Salt (regular)",
+      "Maple bacon",
+      "Salt and vinegar",
+      "Green onion",
+      "Chicken",
+      "Sour Cream & Chives",
+      "Sweet Chilli",
+      "Caramelised Onion & Balsamic Vinegar",
+      "Honey Soy Chicken",
+      "Cheddar & Red Onion",
+      "Wasabi",
+      "Cheese"
+    ]
+  },
+  {
+    "question": "How did Tiger and Mily meet?",
+    "correct": "PASS tutorial",
+    "wrong": [
+      "Christian fellowship",
+      "Lab at uni",
+      "Through friends",
+      "Dating app",
+      "High school",
+      "Primary school",
+      "Workplace",
+      "Coffee shop",
+      "A bar",
+      "Nightclubs",
+      "House party",
+      "Wedding",
+      "Sport team",
+      "Gym",
+      "Neighbours",
+      "A festival",
+      "A concert",
+      "Social media",
+      "Dog park",
+      "Cooking class",
+      "Book club",
+      "Speed dating event"
+    ]
+  },
+  {
+    "question": "What was Mily’s favourite chicken called?",
+    "correct": "Dusty Junior",
+    "wrong": [
+      "Daisy",
+      "Rose",
+      "Dusty",
+      "Rosie",
+      "Rooster",
+      "Pecky",
+      "Nugget",
+      "Clucky",
+      "Henrietta",
+      "Henny",
+      "Biscuit",
+      "Drumstick",
+      "Waffles",
+      "Poppy",
+      "Sunny",
+      "Marigold",
+      "Buttercup",
+      "Maple",
+      "Coco",
+      "Pip",
+      "Nibbles",
+      "Speckles",
+      "Pebble",
+      "Dotty",
+      "Mabel",
+      "Ruby",
+      "Goldie",
+      "Snowy",
+      "Midnight",
+      "Amber",
+      "Rosie Belle",
+      "Daisy Mae",
+      "Clucky Joe",
+      "Poppy",
+      "Goldie Girl",
+      "Maple",
+      "Buttercup",
+      "Speckley Jim",
+      "Coco Bean",
+      "Waffles",
+      "Nibbles",
+      "Henny Penny"
+    ]
+  },
+  {
+    "question": "How many years did Mily play basketball for?",
+    "correct": "7 years",
+    "wrong": [
+      "1 year",
+      "2 years",
+      "3 years",
+      "4 years",
+      "5 years",
+      "6 years",
+      "8 years",
+      "9 years",
+      "10 years",
+      "11 years",
+      "12 years",
+      "13 years",
+      "14 years",
+      "15 years",
+      "16 years",
+      "17 years",
+      "18 years",
+      "19 years",
+      "20 years",
+      "21 years",
+      "22 years"
+    ]
+  },
+  {
+    "question": "What is Mily's favourite colour?",
+    "correct": "Cobalt blue",
+    "wrong": [
+      "Orange",
+      "Velvet",
+      "Yellow",
+      "Pink",
+      "Brown",
+      "Skin colour",
+      "Black",
+      "Grey",
+      "White",
+      "Red",
+      "Forest green",
+      "Purple",
+      "Maroon",
+      "Cyan",
+      "Aqua",
+      "Magenta",
+      "Turquoise",
+      "Crimson",
+      "Teal",
+      "Lime green",
+      "Olive green",
+      "Indigo",
+      "Violet",
+      "Lavender",
+      "Beige",
+      "Tan",
+      "Cream",
+      "Ivory",
+      "Gold",
+      "Silver",
+      "Bronze",
+      "Copper",
+      "Peach",
+      "Coral",
+      "Mustard",
+      "Amber",
+      "Scarlett"
+    ]
+  },
+  {
+    "question": "What is Mily’s favourite animal",
+    "correct": "Chicken",
+    "wrong": [
+      "Dog",
+      "Cat",
+      "Bear",
+      "Wolf",
+      "Fox",
+      "Lion",
+      "Tiger",
+      "Leopard",
+      "Cheetah",
+      "Hyena",
+      "Elephant",
+      "Rhinoceros",
+      "Hippopotamus",
+      "Giraffe",
+      "Zebra",
+      "Horse",
+      "Donkey",
+      "Cow",
+      "Goat",
+      "Sheep",
+      "Pig",
+      "Deer",
+      "Moose",
+      "Elk",
+      "Rabbit",
+      "Hare",
+      "Squirrel",
+      "Mouse",
+      "Rat",
+      "Bat",
+      "Kangaroo",
+      "Koala",
+      "Panda",
+      "Monkey",
+      "Ape",
+      "Gorilla",
+      "Chimpanzee",
+      "Orangutan",
+      "Dolphin",
+      "Whale",
+      "Shark",
+      "Seal",
+      "Sea Lion",
+      "Walrus",
+      "Crocodile",
+      "Alligator",
+      "Lizard",
+      "Snake",
+      "Turtle",
+      "Tortoise",
+      "Frog",
+      "Toad",
+      "Fish",
+      "Meerkat",
+      "Wombat",
+      "Springbok",
+      "Tasmanian Devil",
+      "Beaver",
+      "Chipmunk",
+      "Camel",
+      "Ocelot",
+      "Ox",
+      "Human",
+      "Mammoth",
+      "Eagle",
+      "Hawk",
+      "Owl",
+      "Crow",
+      "Sparrow",
+      "Pigeon",
+      "Seagull",
+      "Penguin",
+      "Flamingo",
+      "Duck",
+      "Goose",
+      "Swan",
+      "Turkey",
+      "Peacock",
+      "Parrot",
+      "Falcon",
+      "Kiwi",
+      "Tui",
+      "Kakapo",
+      "Bee",
+      "Wasp",
+      "Ant",
+      "Butterfly",
+      "Beetle",
+      "Spider",
+      "Crab",
+      "Lobster",
+      "Octopus",
+      "Squid",
+      "Worm",
+      "Earwig",
+      "Centipede",
+      "Cockroach",
+      "Praying Mantis",
+      "Gecko",
+      "Tuatara",
+      "Dinosaur",
+      "Salamander",
+      "Oyster"
+    ]
+  },
+  {
+    "question": "What was Mily’s first job?",
+    "correct": "Cleaning motels",
+    "wrong": [
+      "Waitressing",
+      "Coal miner",
+      "Welder",
+      "Checkout clerk",
+      "Paper run",
+      "Swimming instructor",
+      "Mechanic",
+      "Ice cream shop worker",
+      "Strawberry picker",
+      "Babysitter",
+      "Construction worker",
+      "Electrician",
+      "Plumber",
+      "Carpenter",
+      "Farmer",
+      "Truck driver",
+      "Pilot",
+      "Flight attendant",
+      "Chef",
+      "Barista",
+      "Baker",
+      "Security guard",
+      "Firefighter",
+      "Police officer",
+      "Paramedic",
+      "Librarian",
+      "Software developer",
+      "IT support technician",
+      "Accountant",
+      "Graphic designer",
+      "Journalist",
+      "Photographer",
+      "Cleaner",
+      "Delivery driver",
+      "Postie",
+      "Gardener",
+      "Painter"
+    ]
+  },
+  {
+    "question": "What was the colour of Mily’s first phone?",
+    "correct": "Rose gold",
+    "wrong": [
+      "Silver",
+      "Black",
+      "White",
+      "Blue",
+      "Yellow",
+      "Pink",
+      "Orange",
+      "Red",
+      "Green",
+      "Purple",
+      "Gray",
+      "Space Gray",
+      "Midnight Black",
+      "Midnight Blue",
+      "Navy Blue",
+      "Sky Blue",
+      "Ice Blue",
+      "Teal",
+      "Pink",
+      "Lavender",
+      "Burgundy",
+      "Emerald Green",
+      "Peach",
+      "Lilac",
+      "Matte Black",
+      "Glossy Black",
+      "Pearl White",
+      "Sapphire Blue"
+    ]
+  },
+  {
+    "question": "How old was Mily when she fell out of a tree?",
+    "correct": "11 years young",
+    "wrong": [
+      "8 years young",
+      "9 years young",
+      "10 years young",
+      "12 years young",
+      "2 years young",
+      "3 years young",
+      "4 years young",
+      "5 years young",
+      "6 years young",
+      "7 years young",
+      "13 years young",
+      "14 years young",
+      "15 years young",
+      "16 years young",
+      "17 years young",
+      "18 years young",
+      "19 years young",
+      "20 years young",
+      "21 years young",
+      "22 years ancient"
+    ]
+  },
+  {
+    "question": "How heavy was Mily when she was born",
+    "correct": "4 pounds 11 ounces (2.126 kg)",
+    "wrong": [
+      "3 pounds 5 ounces (1.503 kg)",
+      "3 pounds 6 ounces (1.531 kg)",
+      "3 pounds 7 ounces (1.559 kg)",
+      "3 pounds 8 ounces (1.588 kg)",
+      "3 pounds 9 ounces (1.616 kg)",
+      "3 pounds 10 ounces (1.644 kg)",
+      "3 pounds 11 ounces (1.673 kg)",
+      "3 pounds 12 ounces (1.701 kg)",
+      "3 pounds 13 ounces (1.729 kg)",
+      "3 pounds 14 ounces (1.758 kg)",
+      "3 pounds 15 ounces (1.786 kg)",
+      "4 pounds 0 ounces (1.814 kg)",
+      "4 pounds 1 ounce (1.843 kg)",
+      "4 pounds 2 ounces (1.871 kg)",
+      "4 pounds 3 ounces (1.899 kg)",
+      "4 pounds 4 ounces (1.928 kg)",
+      "4 pounds 5 ounces (1.956 kg)",
+      "4 pounds 6 ounces (1.984 kg)",
+      "4 pounds 7 ounces (2.013 kg)",
+      "4 pounds 8 ounces (2.041 kg)",
+      "4 pounds 9 ounces (2.070 kg)",
+      "4 pounds 10 ounces (2.098 kg)",
+      "4 pounds 12 ounces (2.155 kg)",
+      "4 pounds 13 ounces (2.183 kg)",
+      "4 pounds 14 ounces (2.211 kg)",
+      "4 pounds 15 ounces (2.240 kg)",
+      "5 pounds 0 ounces (2.268 kg)",
+      "5 pounds 1 ounce (2.296 kg)",
+      "5 pounds 2 ounces (2.325 kg)",
+      "5 pounds 3 ounces (2.353 kg)",
+      "5 pounds 4 ounces (2.381 kg)",
+      "5 pounds 5 ounces (2.410 kg)",
+      "5 pounds 6 ounces (2.438 kg)",
+      "5 pounds 7 ounces (2.466 kg)",
+      "5 pounds 8 ounces (2.495 kg)",
+      "5 pounds 9 ounces (2.523 kg)",
+      "5 pounds 10 ounces (2.551 kg)",
+      "5 pounds 11 ounces (2.580 kg)",
+      "5 pounds 12 ounces (2.608 kg)",
+      "5 pounds 13 ounces (2.637 kg)",
+      "5 pounds 14 ounces (2.665 kg)",
+      "5 pounds 15 ounces (2.693 kg)",
+      "6 pounds 0 ounces (2.722 kg)",
+      "6 pounds 1 ounce (2.750 kg)",
+      "6 pounds 2 ounces (2.778 kg)",
+      "6 pounds 3 ounces (2.807 kg)",
+      "6 pounds 4 ounces (2.835 kg)",
+      "6 pounds 5 ounces (2.863 kg)",
+      "6 pounds 6 ounces (2.892 kg)",
+      "6 pounds 7 ounces (2.920 kg)",
+      "6 pounds 8 ounces (2.948 kg)",
+      "6 pounds 9 ounces (2.977 kg)",
+      "6 pounds 10 ounces (3.005 kg)",
+      "6 pounds 11 ounces (3.033 kg)",
+      "6 pounds 12 ounces (3.062 kg)",
+      "6 pounds 13 ounces (3.090 kg)",
+      "6 pounds 14 ounces (3.118 kg)",
+      "6 pounds 15 ounces (3.147 kg)",
+      "7 pounds 0 ounces (3.175 kg)",
+      "7 pounds 1 ounce (3.204 kg)",
+      "7 pounds 2 ounces (3.232 kg)",
+      "7 pounds 3 ounces (3.260 kg)",
+      "7 pounds 4 ounces (3.289 kg)",
+      "7 pounds 5 ounces (3.317 kg)",
+      "7 pounds 6 ounces (3.345 kg)",
+      "7 pounds 7 ounces (3.374 kg)",
+      "7 pounds 8 ounces (3.402 kg)",
+      "7 pounds 9 ounces (3.430 kg)",
+      "7 pounds 10 ounces (3.459 kg)",
+      "7 pounds 11 ounces (3.487 kg)",
+      "7 pounds 12 ounces (3.515 kg)",
+      "7 pounds 13 ounces (3.544 kg)",
+      "7 pounds 14 ounces (3.572 kg)",
+      "7 pounds 15 ounces (3.600 kg)",
+      "8 pounds 0 ounces (3.629 kg)",
+      "8 pounds 1 ounce (3.657 kg)",
+      "8 pounds 2 ounces (3.685 kg)",
+      "8 pounds 3 ounces (3.714 kg)",
+      "8 pounds 4 ounces (3.742 kg)",
+      "8 pounds 5 ounces (3.771 kg)",
+      "8 pounds 6 ounces (3.799 kg)",
+      "8 pounds 7 ounces (3.827 kg)",
+      "8 pounds 8 ounces (3.856 kg)",
+      "8 pounds 9 ounces (3.884 kg)",
+      "8 pounds 10 ounces (3.912 kg)",
+      "8 pounds 11 ounces (3.941 kg)",
+      "8 pounds 12 ounces (3.969 kg)",
+      "8 pounds 13 ounces (3.997 kg)",
+      "8 pounds 14 ounces (4.026 kg)",
+      "8 pounds 15 ounces (4.054 kg)",
+      "9 pounds 0 ounces (4.082 kg)",
+      "9 pounds 1 ounce (4.111 kg)",
+      "9 pounds 2 ounces (4.139 kg)",
+      "9 pounds 3 ounces (4.167 kg)",
+      "9 pounds 4 ounces (4.196 kg)",
+      "9 pounds 5 ounces (4.224 kg)",
+      "9 pounds 6 ounces (4.252 kg)",
+      "9 pounds 7 ounces (4.281 kg)",
+      "9 pounds 8 ounces (4.309 kg)",
+      "9 pounds 9 ounces (4.338 kg)",
+      "9 pounds 10 ounces (4.366 kg)",
+      "9 pounds 11 ounces (4.394 kg)",
+      "9 pounds 12 ounces (4.423 kg)",
+      "9 pounds 13 ounces (4.451 kg)",
+      "9 pounds 14 ounces (4.479 kg)",
+      "9 pounds 15 ounces (4.508 kg)",
+      "10 pounds 0 ounces (4.536 kg)"
+    ]
+  },
+  {
+    "question": "What day of the week was Mily born?",
+    "correct": "Saturday",
+    "wrong": [
+      "Monday",
+      "Tuesday",
+      "Sunday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Yesterday",
+      "Today",
+      "Tomorrow",
+      "Overmorrow",
+      "Ereyesterday",
+      "Yesternight",
+      "Overovermorrow",
+      "Undermorrow",
+      "Foreyesterday",
+      "Preyesterday",
+      "Posttomorrow",
+      "Anteyesterday"
+    ]
+  },
+  {
+    "question": "What is Mily’s star sign?",
+    "correct": "Gemini",
+    "wrong": [
+      "Aries",
+      "Taurus",
+      "Cancer",
+      "Leo",
+      "Virgo",
+      "Libra",
+      "Scorpio",
+      "Ophiuchus",
+      "Capricorn",
+      "Aquarius",
+      "Pisces",
+      "Sagittarius",
+      "Solara",
+      "Lunaris",
+      "Draconis",
+      "Nyxian",
+      "Aethera",
+      "Zephyrus",
+      "Pyra",
+      "Terran",
+      "Aquila",
+      "Virelia",
+      "Eclipta",
+      "Novara",
+      "Nocturn",
+      "Helion",
+      "Maris",
+      "Oriona",
+      "Seraphel",
+      "Valora",
+      "Celestia",
+      "Vespera",
+      "Ignis",
+      "Thalassa",
+      "Asteron",
+      "Nemoris",
+      "Solstice",
+      "Radiara",
+      "Caelus",
+      "Vortana"
+    ]
+  },
+  {
+    "question": "What does Mily like taking photos of the most?",
+    "correct": "Birds",
+    "wrong": [
+      "Lens ball",
+      "People",
+      "Flowers",
+      "Trees",
+      "Bushes",
+      "Grass",
+      "Landscapes",
+      "Mountains",
+      "Hills",
+      "Rivers",
+      "Streams",
+      "Lakes",
+      "Ponds",
+      "Waterfalls",
+      "Beaches",
+      "Sand Dunes",
+      "Cliffs",
+      "Forests",
+      "Sunsets",
+      "Sunrises",
+      "Clouds",
+      "Rainbows",
+      "Stars",
+      "The Moon",
+      "Roads",
+      "Footpaths",
+      "Bridges",
+      "Farms",
+      "Tractors",
+      "Fences",
+      "Houses",
+      "Sheds",
+      "Churches",
+      "Schools",
+      "Shops",
+      "Cars",
+      "Motorcycles",
+      "Bicycles",
+      "Boats",
+      "Trains",
+      "Airplanes",
+      "Cats",
+      "Dogs",
+      "Cows",
+      "Sheep",
+      "Horses",
+      "Goats",
+      "Deer",
+      "Alpacas",
+      "Llamas",
+      "Rabbits",
+      "Hedgehogs",
+      "Bees",
+      "Butterflies",
+      "Dragonflies",
+      "Spiders",
+      "Mushrooms",
+      "Ferns",
+      "Leaves",
+      "Seeds",
+      "Fruit",
+      "Vegetables",
+      "Food",
+      "Coffee Cups",
+      "Books",
+      "Tools",
+      "Machinery",
+      "Street Signs",
+      "Mailboxes",
+      "Playgrounds",
+      "Sports Fields",
+      "Parks",
+      "Cemeteries",
+      "Harbours",
+      "Wharves",
+      "Fishing Boats",
+      "Rock Pools",
+      "Shells",
+      "Driftwood",
+      "Pebbles",
+      "Road Cones",
+      "Power Poles",
+      "Wind Turbines",
+      "Cell Towers",
+      "Construction Sites",
+      "Graffiti",
+      "Statues",
+      "Memorials",
+      "Markets",
+      "Festivals",
+      "Concerts",
+      "Fireworks",
+      "Fishing Rods",
+      "Camping Gear",
+      "Tents",
+      "Snow",
+      "Frost",
+      "Ice",
+      "Fog",
+      "Mist",
+      "Rain",
+      "Puddles",
+      "Reflections",
+      "Shadows",
+      "Silhouettes"
+    ]
+  },
+  {
+    "question": "What sort of mobile device does Mily currently use?",
+    "correct": "iPhone 15",
+    "wrong": [
+      "iPhone 3G",
+      "iPhone 3GS",
+      "iPhone 4",
+      "iPhone 4s",
+      "iPhone 5",
+      "iPhone 5c",
+      "iPhone 5s",
+      "iPhone 6",
+      "iPhone 6 Plus",
+      "iPhone 6s",
+      "iPhone 6s Plus",
+      "iPhone SE (1st generation)",
+      "iPhone 7",
+      "iPhone 7 Plus",
+      "iPhone 8",
+      "iPhone 8 Plus",
+      "iPhone X",
+      "iPhone XR",
+      "iPhone XS",
+      "iPhone XS Max",
+      "iPhone 11",
+      "iPhone 11 Pro",
+      "iPhone 11 Pro Max",
+      "iPhone SE (2nd generation)",
+      "iPhone 12 mini",
+      "iPhone 12",
+      "iPhone 12 Pro",
+      "iPhone 12 Pro Max",
+      "iPhone 13 mini",
+      "iPhone 13",
+      "iPhone 13 Pro",
+      "iPhone 13 Pro Max",
+      "iPhone SE (3rd generation)",
+      "iPhone 14",
+      "iPhone 14 Plus",
+      "iPhone 14 Pro",
+      "iPhone 14 Pro Max",
+      "iPhone 15 Plus",
+      "iPhone 15 Pro",
+      "iPhone 15 Pro Max",
+      "iPhone 16",
+      "iPhone 16 Plus",
+      "iPhone 16 Pro",
+      "iPhone 16 Pro Max",
+      "iPhone 16e",
+      "iPhone 17",
+      "iPhone 17 Air",
+      "iPhone 17 Pro",
+      "iPhone 17 Pro Max",
+      "iPhone 17e",
+      "iPod",
+      "iPod Mini",
+      "iPod Shuffle",
+      "iPod Nano",
+      "iPod Touch",
+      "Samsung Galaxy S21",
+      "Samsung Galaxy S21 Plus",
+      "Samsung Galaxy S21 Ultra",
+      "Samsung Galaxy S21 FE",
+      "Samsung Galaxy S22",
+      "Samsung Galaxy S22 Plus",
+      "Samsung Galaxy S22 Ultra",
+      "Samsung Galaxy S22 FE",
+      "Samsung Galaxy S23",
+      "Samsung Galaxy S23 Plus",
+      "Samsung Galaxy S23 Ultra",
+      "Samsung Galaxy S23 FE",
+      "Samsung Galaxy S24",
+      "Samsung Galaxy S24 Plus",
+      "Samsung Galaxy S24 Ultra",
+      "Samsung Galaxy S24 FE",
+      "Samsung Galaxy S25",
+      "Samsung Galaxy S25 Plus",
+      "Samsung Galaxy S25 Edge",
+      "Samsung Galaxy S25 Ultra",
+      "Samsung Galaxy S25 FE",
+      "Samsung Galaxy Z Fold 3",
+      "Samsung Galaxy Z Fold 4",
+      "Samsung Galaxy Z Fold 5",
+      "Samsung Galaxy Z Fold 6",
+      "Samsung Galaxy Z Fold 7",
+      "OPPO Find X6",
+      "OPPO Find X6 Pro",
+      "OPPO Find N3",
+      "OPPO Find N3 Flip",
+      "OPPO Reno 10",
+      "OPPO Reno 10 Pro",
+      "OPPO Reno 10 Pro Plus",
+      "OPPO Find X7",
+      "OPPO Find X7 Ultra",
+      "OPPO A98",
+      "OPPO Find X8",
+      "OPPO Find X8 Pro",
+      "OPPO Find X8 Ultra",
+      "OPPO Find N5",
+      "OPPO Find N5 Flip",
+      "Vivo X90",
+      "Vivo X90 Pro",
+      "Vivo X90 Pro Plus",
+      "Vivo X100",
+      "Vivo X100 Pro",
+      "Vivo X100 Ultra",
+      "Vivo X200",
+      "Vivo X200 Pro",
+      "Vivo X200 Pro Mini",
+      "Vivo V29",
+      "Vivo V29 Pro",
+      "Vivo V30",
+      "Vivo V30 Pro",
+      "Vivo V40",
+      "Vivo V40 Pro",
+      "Vivo Y100",
+      "Vivo Y200",
+      "Vivo Y300",
+      "Vivo X300",
+      "Vivo X300 Pro",
+      "Xiaomi 13",
+      "Xiaomi 13 Pro",
+      "Xiaomi 13 Ultra",
+      "Xiaomi 14",
+      "Xiaomi 14 Pro",
+      "Xiaomi 14 Ultra",
+      "Xiaomi 15",
+      "Xiaomi 15 Pro",
+      "Xiaomi 15 Ultra",
+      "Xiaomi 13T",
+      "Xiaomi 13T Pro",
+      "Xiaomi 14T",
+      "Xiaomi 14T Pro",
+      "Redmi Note 12",
+      "Redmi Note 12 Pro",
+      "Redmi Note 13",
+      "Redmi Note 13 Pro",
+      "Redmi Note 13 Pro Plus",
+      "Redmi Note 14",
+      "Redmi Note 14 Pro",
+      "Redmi K60",
+      "Redmi K70",
+      "Redmi K70 Pro",
+      "POCO F5",
+      "POCO F6",
+      "POCO X6",
+      "POCO X6 Pro",
+      "POCO F7",
+      "POCO X7",
+      "Pixel 7a",
+      "Pixel Fold",
+      "Pixel 8",
+      "Pixel 8 Pro",
+      "Pixel 8a",
+      "Pixel 9",
+      "Pixel 9 Pro",
+      "Pixel 9 Pro XL",
+      "Pixel 9 Pro Fold",
+      "Pixel 9a",
+      "Pixel 10",
+      "Pixel 10 Pro",
+      "Pixel 10 Pro XL",
+      "Pixel 10 Pro Fold",
+      "Pixel 10a",
+      "Nothing Phone 2",
+      "Nothing Phone 2a",
+      "Nothing Phone 2a Plus",
+      "Nothing Phone 3a",
+      "Nothing Phone 3a Pro",
+      "Nothing Phone 3",
+      "Nothing Phone 3 Lite",
+      "OnePlus 11",
+      "OnePlus 11R",
+      "OnePlus 12",
+      "OnePlus 12R",
+      "OnePlus 13",
+      "OnePlus 13R",
+      "OnePlus 13T",
+      "OnePlus Nord 3 CE",
+      "OnePlus Nord 4",
+      "OnePlus Nord CE 4",
+      "OnePlus Nord CE 4 Lite",
+      "OnePlus Nord 5",
+      "OnePlus Nord 5R"
+    ]
+  },
+  {
+    "question": "What mode of transport does Mily want to take most?",
+    "correct": "Rollerblades",
+    "wrong": [
+      "Car",
+      "Surfboard",
+      "Horse",
+      "Ripstick",
+      "Skateboard",
+      "Hoverboard",
+      "Lime scooter",
+      "Motorcycle",
+      "Train",
+      "Subway",
+      "Maglev",
+      "Running",
+      "Donkey",
+      "Magic carpet",
+      "Scooter",
+      "Bicycle",
+      "Bus",
+      "Taxi",
+      "Ferry",
+      "Plane",
+      "Kayak",
+      "Helicopter",
+      "Glider",
+      "Hot air balloon",
+      "Jetski",
+      "Elevator"
+    ]
+  },
+  {
+    "question": "What was Mily’s favourite movie as a child?",
+    "correct": "Despicable Me",
+    "wrong": [
+      "Ratatouille",
+      "Mulan",
+      "The Lion King",
+      "Cars",
+      "Toy Story",
+      "Finding Nemo",
+      "The Incredibles",
+      "Up",
+      "Inside Out",
+      "Monsters, Inc.",
+      "Wall-E",
+      "Brave",
+      "Frozen",
+      "Moana",
+      "Zootopia",
+      "Big Hero 6",
+      "Tangled",
+      "Encanto",
+      "Coco",
+      "Aladdin",
+      "Beauty and the Beast",
+      "The Little Mermaid",
+      "Snow White and the Seven Dwarfs",
+      "Cinderella",
+      "Sleeping Beauty",
+      "Peter Pan",
+      "Pinocchio",
+      "Dumbo",
+      "Bambi",
+      "101 Dalmatians",
+      "Robin Hood",
+      "The Jungle Book",
+      "Lady and the Tramp",
+      "Hercules",
+      "Tarzan",
+      "Pocahontas",
+      "Shrek",
+      "Puss in Boots",
+      "Kung Fu Panda",
+      "Madagascar",
+      "How to Train Your Dragon",
+      "Minions",
+      "The Secret Life of Pets",
+      "The Lego Movie",
+      "Rio",
+      "Ice Age",
+      "Harry Potter",
+      "Lord of the Rings"
+    ]
+  },
+  {
+    "question": "What was Mily’s first car?",
+    "correct": "Toyota Corolla",
+    "wrong": [
+      "Toyota Hilux",
+      "Toyota RAV4",
+      "Toyota Aqua",
+      "Toyota Prius",
+      "Toyota Yaris",
+      "Toyota Camry",
+      "Toyota Kluger",
+      "Toyota Corona",
+      "Toyota Caldina",
+      "Toyota Hiace",
+      "Toyota Land Cruiser",
+      "Mazda 3",
+      "Mazda Demio",
+      "Mazda CX-5",
+      "Mazda CX-3",
+      "Mazda Atenza",
+      "Mazda Axela",
+      "Ford Ranger",
+      "Ford Falcon",
+      "Ford Focus",
+      "Ford Escape",
+      "Ford Territory",
+      "Mitsubishi Outlander",
+      "Mitsubishi ASX",
+      "Mitsubishi Triton",
+      "Mitsubishi Lancer",
+      "Mitsubishi Delica",
+      "Nissan Note",
+      "Nissan Tiida",
+      "Nissan X-Trail",
+      "Nissan Qashqai",
+      "Nissan Leaf",
+      "Nissan Navara",
+      "Honda Fit",
+      "Honda Civic",
+      "Honda Accord",
+      "Honda CR-V",
+      "Honda Jazz",
+      "Subaru Impreza",
+      "Subaru Forester",
+      "Subaru Outback",
+      "Subaru XV",
+      "Subaru Legacy",
+      "Suzuki Swift",
+      "Suzuki Jimny",
+      "Suzuki Vitara",
+      "Suzuki Baleno",
+      "Suzuki Ignis",
+      "Hyundai i30",
+      "Hyundai Tucson",
+      "Hyundai Santa Fe",
+      "Hyundai Kona",
+      "Hyundai Accent",
+      "Kia Sportage",
+      "Kia Sorento",
+      "Kia Rio",
+      "Kia Cerato",
+      "Kia Seltos",
+      "Volkswagen Golf",
+      "Volkswagen Polo",
+      "Volkswagen Tiguan",
+      "Volkswagen Passat",
+      "Volkswagen Amarok",
+      "BMW 3 Series",
+      "BMW 1 Series",
+      "BMW X5",
+      "BMW X3",
+      "BMW X1",
+      "Mercedes-Benz C-Class",
+      "Mercedes-Benz A-Class",
+      "Mercedes-Benz GLC",
+      "Mercedes-Benz GLE",
+      "Mercedes-Benz Sprinter",
+      "Audi A4",
+      "Audi A3",
+      "Audi Q5",
+      "Audi Q3",
+      "Audi A1",
+      "Tesla Model 3",
+      "Tesla Model Y",
+      "Tesla Model S",
+      "Tesla Model X",
+      "Skoda Octavia",
+      "Skoda Superb",
+      "Skoda Kodiaq",
+      "Holden Commodore",
+      "Holden Colorado",
+      "Isuzu D-Max",
+      "Isuzu MU-X",
+      "LDV T60",
+      "LDV D90",
+      "Toyota Wish",
+      "Toyota Vitz",
+      "Toyota Estima",
+      "Toyota Alphard",
+      "Toyota Vellfire",
+      "Toyota Noah",
+      "Toyota Voxy",
+      "Toyota Auris",
+      "Toyota Probox",
+      "Toyota Sienta",
+      "Toyota Harrier",
+      "Toyota C-HR",
+      "Mazda Premacy",
+      "Mazda CX-30",
+      "Mazda Biante",
+      "Mazda 6",
+      "Ford Transit",
+      "Ford Mondeo",
+      "Mitsubishi Pajero",
+      "Mitsubishi RVR",
+      "Nissan Serena",
+      "Nissan Elgrand",
+      "Nissan March",
+      "Nissan Cube",
+      "Honda Stepwgn",
+      "Honda Odyssey",
+      "Honda Freed",
+      "Subaru Levorg",
+      "Suzuki Alto",
+      "Suzuki Wagon R",
+      "Hyundai i40",
+      "Kia Carnival",
+      "Volkswagen Transporter",
+      "Skoda Fabia",
+      "LDV G10",
+      "Holden Commodore",
+      "Holden Captiva",
+      "Holden Trax",
+      "Holden Cruze",
+      "Holden Barina",
+      "Holden Astra",
+      "Holden Equinox",
+      "Holden Trailblazer",
+      "Renault Clio",
+      "Renault Megane",
+      "Renault Koleos",
+      "Renault Captur",
+      "Peugeot 208",
+      "Peugeot 308",
+      "Peugeot 2008",
+      "Peugeot 3008",
+      "Peugeot 5008",
+      "Citroen C3",
+      "Citroen C4",
+      "Citroen C5 Aircross",
+      "Fiat 500",
+      "Fiat Panda",
+      "Fiat Ducato",
+      "Opel Astra",
+      "Opel Corsa",
+      "Volvo XC60",
+      "Volvo XC90",
+      "Volvo V40",
+      "Volvo S60",
+      "Land Rover Discovery",
+      "Land Rover Discovery Sport",
+      "Land Rover Defender",
+      "Range Rover Evoque",
+      "Range Rover Sport",
+      "Jeep Cherokee",
+      "Jeep Grand Cherokee",
+      "Jeep Compass",
+      "Great Wall Steed",
+      "Great Wall Cannon",
+      "Haval H6",
+      "Haval Jolion",
+      "MG3",
+      "MG ZS",
+      "MG HS",
+      "BYD Atto 3",
+      "BYD Dolphin",
+      "BYD Seal",
+      "BYD Sealion 6",
+      "BYD Sealion 7",
+      "BYD Tang"
+    ]
+  },
+  {
+    "question": "What is Mily’s religion?",
+    "correct": "Christianity",
+    "wrong": [
+      "Islam",
+      "Hinduism",
+      "Buddhism",
+      "Sikhism",
+      "Judaism",
+      "Baha’i Faith",
+      "Jainism",
+      "Zoroastrianism",
+      "Shinto",
+      "Taoism",
+      "Confucianism",
+      "Rastafari",
+      "Tenrikyo",
+      "Caodaism",
+      "Sikh Dharma",
+      "Yazidism",
+      "Druze",
+      "Alevism",
+      "Alawite belief system",
+      "Gnosticism",
+      "Manichaeism",
+      "Mandaeism",
+      "Samaritanism",
+      "Samaritan religion",
+      "Messianic Judaism",
+      "Kimbanguism",
+      "Akan traditional religion",
+      "Yoruba religion",
+      "Vodou (Vodun)",
+      "Santeria",
+      "Candomble",
+      "Umbanda",
+      "Zulu traditional religion",
+      "Shona traditional beliefs",
+      "Maori spirituality",
+      "Aboriginal Australian Dreaming",
+      "Hawaiian religion",
+      "Samoan traditional beliefs",
+      "Tongan traditional beliefs",
+      "Inuit spirituality",
+      "Lakota spirituality",
+      "Navajo spirituality",
+      "Mayan traditional religion",
+      "Aztec religion",
+      "Inca religion",
+      "Greek polytheism",
+      "Roman religion",
+      "Norse paganism",
+      "Celtic polytheism",
+      "Slavic paganism",
+      "Baltic paganism",
+      "Egyptian religion",
+      "Mesopotamian religion",
+      "Canaanite religion",
+      "Persian Mithraism",
+      "Hellenism (modern Greek paganism)",
+      "Asatru",
+      "Heathenry",
+      "Wicca",
+      "Neo-Druidism",
+      "Discordianism",
+      "Thelema",
+      "Satanism (LaVeyan)",
+      "Theistic Satanism",
+      "Luciferianism",
+      "Quakerism",
+      "Anabaptism",
+      "Amish belief system",
+      "Eckankar",
+      "Falun Gong",
+      "ISKCON (Hare Krishna movement)",
+      "Sufism",
+      "Sunni Islam",
+      "Shia Islam",
+      "Ibadi Islam",
+      "Ahmadiyya Islam",
+      "Secular humanism",
+      "Atheism"
+    ]
+  },
+  {
+    "question": "What is Mily’s favourite cheese?",
+    "correct": "Blue cheese",
+    "wrong": [
+      "Cheddar",
+      "Mozzarella",
+      "Parmesan",
+      "Gouda",
+      "Edam",
+      "Colby",
+      "Monterey Jack",
+      "Colby Jack",
+      "Swiss",
+      "Emmental",
+      "Gruyère",
+      "Brie",
+      "Camembert",
+      "Gorgonzola",
+      "Roquefort",
+      "Stilton",
+      "Feta",
+      "Ricotta",
+      "Mascarpone",
+      "Cream cheese",
+      "Cottage cheese",
+      "Paneer",
+      "Halloumi",
+      "Havarti",
+      "Provolone",
+      "Fontina",
+      "Asiago",
+      "Pecorino Romano",
+      "Manchego",
+      "Queso fresco",
+      "Queso blanco",
+      "Oaxaca cheese",
+      "Asadero",
+      "Brick cheese",
+      "Limburger",
+      "Munster",
+      "Taleggio",
+      "Reblochon",
+      "Comté",
+      "Jarlsberg",
+      "Port Salut",
+      "Red Leicester",
+      "Wensleydale",
+      "Double Gloucester",
+      "Lancashire",
+      "Caerphilly",
+      "Chevre",
+      "Boursin",
+      "Neufchâtel",
+      "Fromage blanc",
+      "Quark",
+      "Skyr cheese",
+      "Mascarpone-style soft cheeses",
+      "Ricotta salata",
+      "Smoked cheese",
+      "Mozzarella di bufala",
+      "Stracciatella",
+      "Burrata",
+      "Scamorza",
+      "Caciocavallo",
+      "Grana Padano",
+      "Pecorino Sardo",
+      "Tomme",
+      "Sbrinz",
+      "Appenzeller",
+      "Vacherin",
+      "Ossau-Iraty",
+      "Mahon",
+      "Idiazabal",
+      "Drunken goat cheese",
+      "Saint-Nectaire",
+      "Pont-l’Évêque",
+      "Époisses",
+      "Bleu d’Auvergne",
+      "Fourme d’Ambert",
+      "Danish Blue",
+      "Castello Blue",
+      "Cooper Sharp",
+      "Babybel",
+      "Paneer tikka-style firm cheese",
+      "Smoked Gouda",
+      "Aged cheddar",
+      "Extra mature cheddar",
+      "Young gouda"
+    ]
+  },
+  {
+    "question": "What high school did Mily go to?",
+    "correct": "Riccarton High School",
+    "wrong": [
+      "Aidanfield Christian School",
+      "Amana Christian School",
+      "Araura College",
+      "Ashburton College",
+      "Ashburton Christian School",
+      "Aurora College",
+      "Avonside Girls’ High School",
+      "Blue Mountain College",
+      "Buller High School",
+      "Burnside High School",
+      "Cashmere High School",
+      "Christchurch Adventist School",
+      "Christchurch Boys’ High School",
+      "Christchurch Girls’ High School",
+      "Christchurch Rudolf Steiner School",
+      "Columba College",
+      "Craighead Diocesan School",
+      "Cromwell College",
+      "Darfield High School",
+      "Dunedin Rudolf Steiner School",
+      "Dunstan High School",
+      "East Otago High School",
+      "Ellesmere College",
+      "Emmanuel Christian School",
+      "Fiordland College",
+      "Garin College",
+      "Geraldine High School",
+      "Golden Bay High School",
+      "Gore High School",
+      "Hagley College",
+      "Hillmorton High School",
+      "Hillview Christian School",
+      "Hornby High School",
+      "James Hargest College",
+      "John McGlashan College",
+      "Kaikōura High School",
+      "Kaiapoi High School",
+      "Kaikorai Valley College",
+      "King’s High School",
+      "KingsView School",
+      "Liberton Christian School",
+      "Lincoln High School",
+      "Logan Park High School",
+      "Mackenzie College",
+      "Marian College",
+      "Marlborough Boys’ College",
+      "Marlborough Girls’ College",
+      "Menzies College",
+      "Middleton Grange School",
+      "Mount Aspiring College",
+      "Motueka High School",
+      "Nayland College",
+      "Nelson Christian Academy",
+      "Nelson College",
+      "Nelson College for Girls",
+      "Otago Boys’ High School",
+      "Otago Girls’ High School",
+      "Oxford Area School",
+      "Papanui High School",
+      "Queen’s High School",
+      "Rangiora High School",
+      "Rangiora New Life School",
+      "Richmond View School",
+      "Rolleston College",
+      "Rolleston Christian School",
+      "Roncalli College",
+      "Shirley Boys’ High School",
+      "South Otago High School",
+      "Southland Adventist Christian School",
+      "Southland Boys’ High School",
+      "Southland Girls’ High School",
+      "St Andrew’s College",
+      "St Bede’s College",
+      "St Hilda’s Collegiate School",
+      "St Kevin’s College",
+      "St Margaret’s College",
+      "St Peter’s College",
+      "Taieri College",
+      "Tasman Bay Christian School",
+      "Te Aratai College",
+      "Te Kura Kaupapa Māori o Te Waiū o Ngāti Porou",
+      "Timaru Boys’ High School",
+      "Timaru Christian School",
+      "Timaru Girls’ High School",
+      "Tokomairiro High School",
+      "Trinity Catholic College",
+      "Waimea College",
+      "Waitaki Boys’ High School",
+      "Waitaki Girls’ High School",
+      "Wakatipu High School",
+      "Wallace High School",
+      "Verdon College",
+      "Villa Maria College",
+      "Westland High School"
+    ]
+  }
+]);
 
-  questions.forEach((q, i) => {
-    const allOptions = shuffle([q.correct, ...q.wrong]);
+  const shuffledOptions = questions.map(q => shuffle([q.correct, ...q.wrong]));
+  const answers = new Array(questions.length).fill(null);
+  let current = 0;
+  const total = questions.length;
 
-    const card = document.createElement('div');
-    card.className = 'question-card';
-    card.innerHTML = `
-      <div class="question-number">Question ${i + 1}</div>
-      <div class="question-text">${q.question}</div>
-      <div class="options" id="options-${i}">
-        ${allOptions.map(opt => `
-          <div class="option">
-            <label>
-              <input type="radio" name="q${i}" value="${opt}">
-              ${opt}
-            </label>
-          </div>
-        `).join('')}
+  const questionContainer = document.getElementById('question-container');
+  const nextBtn = document.getElementById('next-btn');
+  const backBtn = document.getElementById('back-btn');
+  const progressLabel = document.getElementById('progress-label');
+  const progressBar = document.getElementById('progress-bar');
+
+  function renderQuestion(index) {
+    const q = questions[index];
+    const opts = shuffledOptions[index];
+    const isLast = index === total - 1;
+    progressLabel.textContent = `Question ${index + 1} of ${total}`;
+    progressBar.style.width = `${(index / total) * 100}%`;
+    nextBtn.textContent = isLast ? 'Submit' : 'Next';
+    nextBtn.disabled = answers[index] === null;
+    backBtn.style.display = index > 0 ? 'inline-block' : 'none';
+    questionContainer.innerHTML = `
+      <div class="question-card question-page">
+        <div class="question-number">Question ${index + 1}</div>
+        <div class="question-text">${q.question}</div>
+        <div class="options">
+          ${opts.map(opt => `
+            <div class="option">
+              <label>
+                <input type="radio" name="q${index}" value="${opt.replace(/"/g, '&quot;')}"
+                  ${answers[index] === opt ? 'checked' : ''}>
+                ${opt}
+              </label>
+            </div>
+          `).join('')}
+        </div>
       </div>
     `;
-    form.appendChild(card);
-  });
-
-  // Submit logic
-  document.getElementById('submit-btn').addEventListener('click', function () {
-    let score = 0;
-    let allAnswered = true;
-
-    questions.forEach((q, i) => {
-      const selected = document.querySelector(`input[name="q${i}"]:checked`);
-      if (!selected) { allAnswered = false; return; }
-
-      const optionsContainer = document.getElementById(`options-${i}`);
-      const labels = optionsContainer.querySelectorAll('label');
-
-      labels.forEach(label => {
-        const radio = label.querySelector('input');
-        radio.disabled = true;
-        if (radio.value === q.correct) {
-          label.classList.add('correct');
-        } else if (radio.checked) {
-          label.classList.add('wrong');
-        }
+    document.querySelectorAll(`input[name="q${index}"]`).forEach(radio => {
+      radio.addEventListener('change', () => {
+        answers[index] = radio.value;
+        nextBtn.disabled = false;
       });
-
-      if (selected.value === q.correct) score++;
     });
+  }
 
-    if (!allAnswered) {
-      alert('Please answer all questions before submitting!');
-      return;
-    }
-
-    const total = questions.length;
+  function showReview() {
+    document.getElementById('quiz-section').style.display = 'none';
+    const reviewSection = document.getElementById('review-section');
+    reviewSection.style.display = 'block';
+    let score = 0;
+    let reviewHTML = '';
+    questions.forEach((q, i) => {
+      const opts = shuffledOptions[i];
+      const chosen = answers[i];
+      if (chosen === q.correct) score++;
+      reviewHTML += `
+        <div class="question-card">
+          <div class="question-number">Question ${i + 1}</div>
+          <div class="question-text">${q.question}</div>
+          <div class="options">
+            ${opts.map(opt => {
+              let cls = '';
+              if (opt === q.correct) cls = 'correct';
+              else if (opt === chosen) cls = 'wrong';
+              return `<div class="option"><label class="${cls}"><input type="radio" name="review-q${i}" ${chosen === opt ? 'checked' : ''} disabled>${opt}</label></div>`;
+            }).join('')}
+          </div>
+        </div>`;
+    });
     const percent = Math.round((score / total) * 100);
     const msgs = [
-      { min: 100, msg: "Perfect score! You basically ARE Mily 🐔" },
-      { min: 75,  msg: "Pretty good! You know Mily well 🎉" },
+      { min: 100, msg: "Perfect score! You basically ARE Mily \uD83D\uDC14" },
+      { min: 75,  msg: "Pretty good! You know Mily well \uD83C\uDF89" },
       { min: 50,  msg: "Not bad, but room to improve!" },
-      { min: 1,   msg: "Oof. Do you even know Mily? 😅" },
-      { min: 0,   msg: "Zero?! Have you met Mily before?? 💀" }
+      { min: 1,   msg: "Oof. Do you even know Mily? \uD83D\uDE05" },
+      { min: 0,   msg: "Zero?! Have you met Mily before?? \uD83D\uDC80" }
     ];
     const msg = msgs.find(m => percent >= m.min)?.msg || msgs[msgs.length - 1].msg;
-
     document.getElementById('score-text').textContent = `${score} / ${total} (${percent}%)`;
     document.getElementById('score-msg').textContent = msg;
-    document.getElementById('result').style.display = 'block';
-    document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
-    this.disabled = true;
-  });
-</script>
+    document.getElementById('review-container').innerHTML = reviewHTML;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
+  nextBtn.addEventListener('click', () => {
+    if (answers[current] === null) return;
+    if (current < total - 1) { current++; renderQuestion(current); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    else { showReview(); }
+  });
+
+  backBtn.addEventListener('click', () => {
+    if (current > 0) { current--; renderQuestion(current); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  });
+
+  renderQuestion(0);
+</script>
 </body>
 </html>
